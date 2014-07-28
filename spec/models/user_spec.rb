@@ -89,4 +89,14 @@ describe User do
   		it { should be_invalid }
   	end
   end
+
+  describe "when the email address contains capitals" do
+    let(:mixcase_email) { "ExAmPlE@fOo.com" }
+    it "should be saved as lower case" do
+      @user.email = mixcase_email
+      @user.save
+      expect(@user.reload.email).to eq mixcase_email.downcase
+    end
+  end
+
 end
