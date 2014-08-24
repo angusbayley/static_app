@@ -138,4 +138,12 @@ describe "UserPages" do
       end
     end
   end
+
+  describe "unnecessary actions for signed in users:" do
+    let(:user) { FactoryGirl.create(:user) }
+    before { sign_in(:user) }
+    describe " users#new" do
+      before { post new_user_path, params }
+    end
+  end
 end

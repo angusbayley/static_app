@@ -10,6 +10,12 @@ describe "AuthenticationPages" do
 		it { should have_content("Sign in") }
 	end
 
+	describe "before sign-in" do
+		before { visit root_url }
+		it { should_not have_link('Profile') }
+		it { should_not have_link('Settings') }
+	end
+
 	describe "Sign in" do
 		before { visit signin_path }
 		describe "with invalid information" do
@@ -93,6 +99,19 @@ describe "AuthenticationPages" do
 				specify { expect(response).to redirect_to(root_url) }
 			end
 		end
+
+		describe "ensuring the admin property can't be set" do
+			let(:non_admin) { FactoryGirl.create(:user) }
+			let(:params) do
+				{ user: { admin: true, password: non_admin.password, password_confirmation: non_admin.password } }
+			end
+			before do 
+				sign_in(non_admin)
+				patch user_path(:non_admin), params
+			end
+			specify { expect(non_admin.reload).not_to be_admin }
+		end
+
 	end
 
 end
