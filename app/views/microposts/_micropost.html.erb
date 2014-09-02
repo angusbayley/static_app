@@ -1,0 +1,6 @@
+<% @user.microposts.each do |micropost| %>
+	<div class="micropost">
+		<h4><%= micropost.content %></h4>
+		<h5><%= micropost.created_at %></h5>
+	</div>
+<% end %>

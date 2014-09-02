@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+	has_many :microposts, dependent: :destroy
 	has_secure_password
 	before_save	{ self.email.downcase! }
 	validates :name, presence: true, length: { maximum: 50 }

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Micropost do
   let(:user) { FactoryGirl.create(:user) }
   before do
-  	@micropost = user.micropost.build(content: 'Lorem Ipsum')
+  	@micropost = user.microposts.build(content: 'Lorem Ipsum')
   end
 
   subject { @micropost }
@@ -19,4 +19,21 @@ describe Micropost do
   	before { @micropost.user_id = nil }
   	it { should_not be_valid }
   end
+
+  describe "when the micropost is blank" do
+  	before { @micropost.content = " " }
+  	it { should_not be_valid }
+  end
+
+  describe "when the micropost is too long" do
+  	before { @micropost.content = "a"*141 }
+  	it { should_not be_valid }
+  end
+
+  # describe "saving a valid post" do
+  # 	expect do
+  # 		Micropost.create(user_id: user, content: "Lorem Ipsum")
+  # 	end.to increase(Micropost).by(1)
+  # 	it { should be_valid }
+  # end
 end
