@@ -1,6 +1,8 @@
-<% @user.microposts.each do |micropost| %>
-	<div class="micropost">
-		<h4><%= micropost.content %></h4>
-		<h5><%= micropost.created_at %></h5>
-	</div>
-<% end %>
+<div class="micropost">
+	<h4><%= micropost.content %></h4>
+	<p>twatted <%= time_ago_in_words(micropost.created_at) %> ago
+		<% if current_user?(micropost.user) %>
+			<%= link_to("delete", micropost, method: :delete, data: { confirm: "you sure?" }, title: micropost.content) %>
+		<% end %>
+	</p>
+</div>

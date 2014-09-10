@@ -16,6 +16,22 @@ describe "Static pages" do
 
     it_should_behave_like "all static pages"
     it { should_not have_title('| Home') }
+
+    describe "for signed in users" do
+      let(:user) { FactoryGirl.create(:user) }
+      let(:micropost_1) { FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum") }
+      let(:micropost_2) { FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet") }
+      before do
+        sign_in user
+        visit root_path
+      end
+
+      it "should render users content" do
+        user.feed.each do |item|
+          it { should have_selector("li##{item.id}", text: item.content) }
+        end
+      end
+    end
   end
   describe "Help page" do
   	before { visit help_path }
@@ -46,7 +62,7 @@ describe "Static pages" do
     click_link "Home"
     click_link "Sign up now!"
     expect(page).to have_title(full_title('Sign Up'))
-    click_link "It's Only a Bloody App"
+    click_link "Twatter"
     expect(page).to have_title(full_title(''))
   end
 end

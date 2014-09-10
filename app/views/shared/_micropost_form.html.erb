@@ -1,0 +1,8 @@
+<%= form_for(@micropost) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+	<%= f.label :content, "What do you want to share?" %>
+	<div class="field">
+		<%= f.text_field :content, placeholder: "Say something nice..." %>
+	</div>
+	<%= f.submit "Share", class: "btn btn-large btn-primary" %> 
+<% end %>

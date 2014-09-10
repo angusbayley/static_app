@@ -72,6 +72,21 @@ describe "AuthenticationPages" do
 			    end
 			  end
 			end
+
+			describe "in the microposts controller" do
+			  describe "trying to create a new micropost" do
+			  	before do
+			  		post microposts_path
+			  	end
+			  	specify { expect(response).to redirect_to(signin_path) }
+			  end
+			  describe "trying to delete a micropost" do
+			  	before do
+			  		delete micropost_path(FactoryGirl.create(:micropost))
+			  	end
+			  	specify { expect(response).to redirect_to(signin_path) }
+			  end
+			end
 		end
 
 		describe "as the wrong user" do

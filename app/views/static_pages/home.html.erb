@@ -1,7 +1,30 @@
-<div class="center hero-unit">
-	<h1>Welcome to the Sample App!</h1>
-	<h2>This is the homepage for the Rails Tutorial Sample Application</h2>
-	<%= link_to "Sign up now!", signup_path, class: "btn btn-large btn-primary" %>
-</div>
+<% if signed_in? %>
+	<div class="row">
+		<aside class="span4">
+			<section>
+				<%= render 'shared/user_info' %>
+			</section>
+			<section>
+				<%= render 'shared/micropost_form' %>
+			</section>
+		</aside>
+		<aside class="span7">
+			<h3>Feed</h3>
+			<% if @feed_items.any? %>
+				<ol class="feed">
+					<%= render partial: 'shared/feed_item', collection: @feed_items %>		
+				</ol>
+				<%= will_paginate @feed_items %>
+			<% end %>
+		</aside>
+	</div>
 
-<%= link_to image_tag("rails.png", alt: "Rails"), "http://rubyonrails.org/" %>
+<% else %>
+	<div class="center hero-unit">
+		<h1>Welcome to the Sample App!</h1>
+		<h2>This is the homepage for the Rails Tutorial Sample Application</h2>
+		<%= link_to "Sign up now!", signup_path, class: "btn btn-large btn-primary" %>
+	</div>
+
+	<%= link_to image_tag("rails.png", alt: "Rails"), "http://rubyonrails.org/" %>
+<% end %>

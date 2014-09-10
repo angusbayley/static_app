@@ -1,0 +1,13 @@
+<li class = "feed_micropost <%=feed_item.id%>">
+	<div class="gravatar">
+		<%= gravatar_for(User.find(feed_item.user_id)) %>
+	</div> 
+	<div class="micropost">
+		<p class="micropost_user"><%= User.find(feed_item.user_id).name %></p>
+		<h4><%= feed_item.content %></h4>
+		<p class="micropost_timestamp">
+			twatted <%= time_ago_in_words(feed_item.created_at) %> ago
+			<%= link_to("delete", feed_item, method: :delete, data: { confirm: "you sure?" }, title: feed_item.content) %>
+		</p>
+	</div>
+</li>
