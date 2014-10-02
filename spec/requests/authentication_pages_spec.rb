@@ -65,12 +65,27 @@ describe "AuthenticationPages" do
 						it { should have_content("Edit your profile") }
 					end
 				end
+
 				describe "all users page" do
 			    describe "for un-signed-in visitors" do
 			      before { visit users_path }
 			      it { should have_title("Sign in") }
 			    end
 			  end
+
+			  describe "following page" do
+			  	describe "for un-signed-in users" do
+			  		before { visit following_user_path(user) }
+			  		it { should have_title "Sign in" }
+			  	end
+				end
+
+			  describe "followers page" do
+			  	describe "for un-signed-in users" do
+			  		before { visit followers_user_path(user) }
+			  		it { should have_title "Sign in" }
+			  	end
+				end
 			end
 
 			describe "in the microposts controller" do
@@ -127,6 +142,25 @@ describe "AuthenticationPages" do
 			specify { expect(non_admin.reload).not_to be_admin }
 		end
 
-	end
+		describe "in the relationships controller" do
+      let(:user) { FactoryGirl.create(:user) }
+      let(:other_user) { FactoryGirl.create(:user) }
 
+      describe "clicking the follow button" do
+      	before do
+      		visit user_path(other_user.id)
+      		post relationships_path
+      	end
+        it "should redirect to signup page if not signed in" do
+          expect(response).to redirect_to(signin_path)
+        end
+      end
+
+      describe "submitting a destroy to the relationships controller" do
+      	before { delete relationship_path(1) }
+      	specify { expect(response).to redirect_to(signin_path) }
+      end
+    
+    end
+	end
 end

@@ -13,6 +13,12 @@ describe User do
   it { should respond_to(:admin) }
   it { should respond_to(:microposts) }
   it { should respond_to(:feed) }
+  it { should respond_to(:relationships) }
+  it { should respond_to(:followed_users) }
+  it { should respond_to(:following?) }
+  it { should respond_to(:follow!) }
+  it { should respond_to(:reverse_relationships) }
+  it { should respond_to(:followers) }
   it { should respond_to(:remember_token) }
 
   it { should be_valid }
@@ -133,17 +139,45 @@ describe User do
        expect(Micropost.where(id: micropost.id)).to be_empty
       end
     end
-    describe "status" do
-    
+    describe "status" do    
       let(:unfollowed_micropost) do
         FactoryGirl.create(:micropost, user: FactoryGirl.create(:user))
       end
+      let(:followed_user) { FactoryGirl.create(:user) }
+      let(:followed_micropost) { FactoryGirl.create(:micropost, user: followed_user) }
+      before { @user.follow!(followed_user) }
     
-
       its(:feed) { should include(old_micropost) }
       its(:feed) { should include(new_micropost) }
       its(:feed) { should_not include(:unfollowed_micropost) }
+      its(:feed) { should include(followed_micropost) }
     end
   end
 
+  describe "following" do
+    let(:followed_user) { FactoryGirl.create(:user) }
+    before do
+      @user.save
+      @user.follow!(followed_user)
+    end
+    it "should be following the followed_user" do
+      expect(@user.followed_users).to include(followed_user)
+    end
+
+    describe "unfollowing" do
+      before { @user.unfollow!(followed_user) }
+      it { should_not be_following(followed_user) }
+    end
+  end
+
+  describe "followed by" do
+    let(:follower) { FactoryGirl.create(:user) }
+    before do
+      @user.save
+      follower.follow!(@user)
+    end
+    it "should be followed by the follower" do
+      expect(@user.followers).to include(follower)
+    end
+  end
 end

@@ -1,0 +1,39 @@
+<%= provide(:title, @title) %>
+
+<div class="row">
+	<aside class="span4">
+		<section>
+			<h1>
+				<%= gravatar_for @user %>
+				<%= @user.name %>
+			</h1>
+		</section>
+		<section>
+			<%= render 'shared/stats' %>
+		</section>
+	  <% if @users.any? %>
+      <div class="user_avatars">
+        <% @users.each do |user| %>
+          <%= link_to(gravatar_for(user, size: 30), user) %>
+        <% end %>
+      </div>
+    <% end %>
+	</aside>
+
+	<div class="span8 people_list">
+		<% if @title == "Following" %>
+			<h3>Following</h3>
+			<ol class="following">
+				<%= render partial: "shared/person_list", collection: @users %>
+			</ol>
+			<%= will_paginate @users %>
+		<% end %>
+		<% if @title == "Followers" %>
+			<h3>Followers</h3>
+			<ol class="followers">
+				<%= render partial: "shared/person_list", collection: @users %>
+			</ol>
+			<%= will_paginate @users %>
+		<% end %>
+	</div>
+</div>

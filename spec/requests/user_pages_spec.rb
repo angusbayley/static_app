@@ -25,6 +25,63 @@ describe "UserPages" do
       it { should have_content(m2.content) }
       it { should have_content(user.microposts.count) }
     end
+
+    describe "follow/unfollow buttons" do
+      let(:other_user) { FactoryGirl.create(:user) }
+
+      describe "following" do
+        before do
+          sign_in(user)
+          visit user_path(other_user.id)
+        end
+        describe "it should be able to create a relationship if signed in" do
+          specify { expect { click_button('Follow') }.to change(Relationship, :count).by(1) }
+        end
+        describe "change the follow button to unfollow upon follow" do
+          before { click_button("Follow") }
+          it { should have_selector("input[value=Unfollow]") }
+        end
+      end
+
+      describe "unfollowing" do
+        before do
+          sign_in(user)
+          user.follow!(other_user)
+          visit user_path(other_user.id)
+        end
+
+        it { should have_selector("input[value=Unfollow]") }
+        describe "clicking unfollowing should destroy a relationship" do
+          specify { expect { click_button('Unfollow') }.to change(Relationship, :count).by(-1) }
+        end
+        describe "change the unfollow button to follow upon unfollow" do
+          before { click_button("Unfollow") }
+          it { should have_selector("input[value=Follow]") }
+        end
+      end
+    end
+  end
+
+  describe "following/followers pages" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:other_user) { FactoryGirl.create(:user) }
+    before do
+      sign_in(user)
+      user.follow!(other_user)
+    end
+
+    describe "followers page" do
+      before { visit followers_user_path(other_user) }
+      it { should have_selector("li##{user.id}") }
+      it { should have_title('Follow') }
+    end
+
+    describe "following page" do
+      before { visit following_user_path(user) }
+      it { should have_selector("li##{other_user.id}") }
+      it { should have_title('Following') }
+    end
+
   end
 
   describe "signup" do
